@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+"""Download a subject image from OSF."""
+
+from __future__ import annotations
+
+from argparse import ArgumentParser
+from os import PathLike
+from pathlib import Path
+import requests
+
+
+ID_URL_MAP = {
+    "0010": "https://osf.io/download/j24ma/",
+    "0086": "https://osf.io/download/63e54bc89b908d04052afe22/",
+    "0101": "https://osf.io/download/63e54bd202c50103c947cbf6/",
+    "0109": "https://osf.io/download/63e54c049b908d040d2ae50d/",
+    "0114": "https://osf.io/download/rjk9c/",
+    "0117": "https://osf.io/download/63e54c1302c50103c847c9f7/",
+    "0145": "https://osf.io/download/63e54c198cc0db03af2ade9c/",
+    "0177": "https://osf.io/download/63e54c2002c50103c847ca0a/",
+    "0180": "https://osf.io/download/63e54c2502c50103be47e1c3/",
+    "0188": "https://osf.io/download/63e54c2c8cc0db03af2adebb/",
+    "0200": "https://osf.io/download/63e54c329b908d04052afe6b/",
+    "0203": "https://osf.io/download/63e54c368cc0db03a02af837/",
+    "0216": "https://osf.io/download/63e54c3d9b908d04112adf9b/",
+    "0239": "https://osf.io/download/63e54c439b908d04002b00a5/",
+    "0249": "https://osf.io/download/63e54c4b8cc0db03aa2ae028/",
+    "0255": "https://osf.io/download/63e54c5302c50103d047c45b/",
+    "0256": "https://osf.io/download/63e54c59197ebb03fea148f7/",
+    "0263": "https://osf.io/download/63e54c5e9b908d04112adfe0/",
+    "0266": "https://osf.io/download/63e54c6302c50103d147c472/",
+    "0274": "https://osf.io/download/63e54c6a8cc0db03af2adf38/",
+    "0284": "https://osf.io/download/63e54c70197ebb03fea14928/",
+    "0303": "https://osf.io/download/63e54c77197ebb03fea14938/",
+    "0343": "https://osf.io/download/63e54c7c8cc0db03a92addde/",
+    "0345": "https://osf.io/download/63e54c818cc0db03aa2ae04f/",
+    "0357": "https://osf.io/download/63e54c868cc0db03a92addf0/",
+    "0365": "https://osf.io/download/63e54c8a02c50103be47e1f8/",
+    "0371": "https://osf.io/download/63e54c8f9b908d04052afede/",
+    "0395": "https://osf.io/download/63e54c93197ebb03eaa164b7/",
+    "0398": "https://osf.io/download/63e54c9a02c50103d047c4b8/",
+    "0456": "https://osf.io/download/63e54ca03db09504071d010e/",
+}
+
+
+class DuaConsentError(Exception):
+    """Raised if the user does not agree to the DUA."""
+
+
+def check_consent():
+    print(
+        "Use of this data requires agreement to the terms of the "
+        "OASIS Data Use Agreement, available at https://www.oasis-brains.org/#access "
+        "or in this repository's DATA_USE_AGREEMENT.md. Do you agree to abide by the "
+        "terms of the Data Use Agreement? y/N"
+    )
+    agreement = input()
+    if agreement.lower() not in ["y", "yes"]:
+        raise DuaConsentError(
+            "You must agree to the Data Use Agreement to download this data."
+        )
+
+
+def download_image(dataset_root: PathLike[str] | str, id_: str):
+    subj_dir = Path(dataset_root) / f"sub-{id_}" / "anat"
+    subj_dir.mkdir(parents=True, exist_ok=True)
+    with open(subj_dir / f"sub-{id_}_T1w.nii.gz", "wb") as out_file:
+        out_file.write(requests.get(ID_URL_MAP[id_]).content)
+
+
+def download_all_images(dataset_root: PathLike[str] | str):
+    for id_ in ID_URL_MAP:
+        print(f"Downloading subject {id_}")
+        download_image(dataset_root, id_)
+
+
+def gen_parser():
+    parser = ArgumentParser()
+    parser.add_argument("dataset_root", help="Root path of the AFIDs-OASIS dataset.")
+    parser.add_argument(
+        "id",
+        help=(
+            "Subject ID of the subject T1w image to be downloaded, or 'all' to "
+            "download all subject T1w images.",
+        ),
+    )
+    return parser
+
+
+def main():
+    args = gen_parser().parse_args()
+    check_consent()
+    if args.id == "all":
+        download_all_images(args.dataset_root)
+        return
+    download_image(args.dataset_root, args.id)
+
+
+if __name__ == "__main__":
+    main()

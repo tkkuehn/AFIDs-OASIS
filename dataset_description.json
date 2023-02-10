@@ -1,0 +1,26 @@
+{
+    "Name": "Open Access Series of Imaging Studies Subset (AFIDs-OASIS)",
+    "BIDSVersion": "1.7.0",
+    "Authors": [
+        "Jonathan C. Lau",
+        "Andrew G. Parrent",
+        "John Demarco",
+        "Geetika Gupta",
+        "Jason Kai",
+        "Olivia W. Stanley",
+        "Tristan Kuehn",
+        "Patrick J. Park",
+        "Kayla Ferko",
+        "Ali R. Khan",
+        "Terry M. Peters"
+    ],
+    "Acknowledgements": "Data were provided by OASIS-1: Cross-Sectional: Principal Investigators: D. Marcus, R, Buckner, J, Csernansky J. Morris; P50 AG05681, P01 AG03991, P01 AG026276, R01 AG021910, P20 MH071616, U24 RR021382",
+    "License": "CC0",
+    "DatasetDOI": "doi:10.18112/openneuro.ds004288.v1.0.5",
+    "HowToAcknowledge": "If using AFIDs data please cite: \nLau, J. C. et al. A framework for evaluating correspondence between brain images using anatomical fiducials. Hum. Brain Mapp. 40, 4163–4179 (2019)",
+    "Funding": [
+        "Canadian Institutes of Health Research Frederick Banting and Charles Best Canada Graduate Doctoral Award Scholarship",
+        "Western University Clinical Investigator Program",
+        "Canadian Institute for Health Research CIHR FDN 201409"
+    ]
+}
